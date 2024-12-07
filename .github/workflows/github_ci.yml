@@ -11,7 +11,7 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Visual Studio 16 2019"       
             cmake --build build
-            .\build\bin\test_Translator.exe
+            .\build\bin\test_translator.exe
     
   linux-build:
     runs-on: ubuntu-20.04
@@ -21,4 +21,4 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Unix Makefiles"       
             cmake --build build
-            ./build/bin/test_Translator
+            ./build/bin/test_translator
