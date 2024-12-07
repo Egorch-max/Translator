@@ -22,4 +22,4 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Unix Makefiles"       
             cmake --build build
-            ./build/bin/test_expression_Translator
+            ./build/bin/test_Translator
