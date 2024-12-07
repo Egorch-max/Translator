@@ -1,6 +1,7 @@
 name: Translator
 
-on: [push, pull_request]
+on:
+  push
 
 jobs:
   windows-build:
@@ -11,7 +12,7 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Visual Studio 16 2019"       
             cmake --build build
-            .\build\bin\test_translator.exe
+            .\build\bin\test_Translator.exe
     
   linux-build:
     runs-on: ubuntu-20.04
@@ -21,4 +22,4 @@ jobs:
             mkdir build
             cmake -Bbuild -G "Unix Makefiles"       
             cmake --build build
-            ./build/bin/test_translator
+            ./build/bin/test_expression_Translator
