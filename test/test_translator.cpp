@@ -1,4 +1,5 @@
 #include "gtest.h"
+
 #include "Translator.h"
 
 TEST(TNumber, can_create_number)
