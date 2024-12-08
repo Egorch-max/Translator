@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+//привет
 #include <iostream>
 #include "stack_queue.h"
 #include "term.h"
