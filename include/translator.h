@@ -1,5 +1,5 @@
 ﻿#pragma once
-//привет
+
 #include <iostream>
 #include "stack_queue.h"
 #include "term.h"
@@ -27,6 +27,7 @@ private:
 	double Calculation();
 
 public:
+
 	Translator(string s) : str(s) {}
 
 	~Translator()
@@ -79,36 +80,37 @@ public:
 
 bool Translator::LexicalAnalysis()
 {
-	string tmp_str = str;
+	size_t i = 0;  
 
-	while (!tmp_str.empty()) 
+	while (i < str.size())  
 	{
-
-		if (tmp_str[0] == '+' || tmp_str[0] == '-' || tmp_str[0] == '*' || tmp_str[0] == '/') 
+		if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/')
 		{
-			str_terms.push_back(new Operator(tmp_str[0]));
+			
+			str_terms.push_back(new Operator(str[i]));
 
-			tmp_str.erase(tmp_str.begin(), tmp_str.begin() + 1);
+			i++;  
 		}
-
-		else if (tmp_str[0] >= '0' && tmp_str[0] <= '9') 
+		else if (str[i] >= '0' && str[i] <= '9')
 		{
 			string::size_type sz;
 
-			str_terms.push_back(new Number(stod(tmp_str, &sz)));
+			str_terms.push_back(new Number(stod(str.substr(i), &sz))); 
 
-			tmp_str.erase(tmp_str.begin(), tmp_str.begin() + sz);
+			i += sz;  
 		}
-
-		else if (tmp_str[0] == '(' || tmp_str[0] == ')') 
+		else if (str[i] == '(' || str[i] == ')')
 		{
-			str_terms.push_back(new Bracket(tmp_str[0]));
+			str_terms.push_back(new Bracket(str[i]));
 
-			tmp_str.erase(tmp_str.begin(), tmp_str.begin() + 1);
+			i++;  
 		}
-
-		else return false;
+		else
+		{
+			return false;
+		}
 	}
+
 	return true;
 }
 void Translator::ToPostfix()
@@ -166,84 +168,59 @@ void Translator::ToPostfix()
 		stack.pop();
 	}
 }
+
+int Conformity(char s)
+{
+	if (s == '(')
+	{
+		return ')';
+	}
+}
+
 bool Translator::SyntacticAnalysis()
 {
-	size_t num_brackets = 0;
+	Stack<char> stack;  
 
-	for (size_t i = 0; i < str_terms.size() - 1; i++)
+	
+	for (size_t i = 0; i < str_terms.size(); i++)
 	{
-		type term = str_terms[i + 1]->GetType();
+	
+		Term* currentTerm = str_terms[i];
 
-		switch (str_terms[i]->GetType())
+		
+		switch (currentTerm->GetType())
 		{
 		case type::OPENING_BRACKET:
 		{
-			if (term == CLOSING_BRACKET || term == OPERATOR)
-			{
-				return false;
-			}
-			else
-			{
-				num_brackets++;
-			}
+			
+			stack.push(((Bracket*)currentTerm)->get_op());
 
 			break;
 		}
 
 		case type::CLOSING_BRACKET:
 		{
-			if (term == OPENING_BRACKET || term == NUMBER)
+		
+			if (!stack.empty() && ((Bracket*)currentTerm)->get_op() == Conformity(stack.top()))
 			{
-				return false;
+				stack.pop();  
 			}
-
-			else if (--num_brackets < 0)
+			else
 			{
-				return false;
+				return false;  
 			}
-
 			break;
 		}
 
-		case type::NUMBER:
-		{
-			if (term == OPENING_BRACKET || term == NUMBER)
-			{
-				return false;
-			}
+		default:
 
-			break;
-		}
-
-		case type::OPERATOR:
-		{
-			if (term == OPERATOR || term == CLOSING_BRACKET)
-			{
-				return false;
-			}
-
-			break;
-		}
+			break;  
 		}
 	}
-
-	if (str_terms[str_terms.size() - 1]->GetType() == OPENING_BRACKET || str_terms[str_terms.size() - 1]->GetType() == OPERATOR)
-	{
-		return false;
-	}
-
-	if (str_terms[str_terms.size() - 1]->GetType() == CLOSING_BRACKET)
-	{
-		--num_brackets;
-	}
-
-	if (num_brackets)
-	{
-		return false;
-	}
-
-	return true;
+	return stack.empty();
 }
+
+
 
 double Translator::Calculation() {
 

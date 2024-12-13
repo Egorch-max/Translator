@@ -143,3 +143,7 @@ TEST(tTranslator, combination_of_operations_and_priority_with_correct_answer)
 
 	EXPECT_EQ(d, expr.solve());
 }
+
+
+
+
